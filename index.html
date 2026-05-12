@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Finance Tracker Pro</title>
+    
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/recharts/umd/Recharts.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&family=Noto+Sans+Thai:wght@400;600&display=swap');
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { margin: 0; background: #020817; color: #e2e8f0; font-family: 'DM Sans', 'Noto Sans Thai', sans-serif; }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div style="color: #475569; display: flex; justify-content: center; align-items: center; height: 100vh;">
+            กำลังโหลดแอป... (Loading...)
+        </div>
+    </div>
+
+    <script type="text/babel">
+        // ป้องกัน Error จาก Recharts
+        const { useState, useMemo, useEffect } = React;
+        const { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } = Recharts;
+
+        function FinanceApp() {
+            // โหลดข้อมูลจาก LocalStorage
+            const [data, setData] = useState(() => {
+                try {
+                    const saved = localStorage.getItem("finance_v1_data");
+                    return saved ? JSON.parse(saved) : {};
+                } catch (e) { return {}; }
+            });
+
+            const [year] = useState(2025);
+            const [month] = useState(9);
+            const key = `${year}-${month}`;
+
+            // บันทึกข้อมูลอัตโนมัติ
+            useEffect(() => {
+                localStorage.setItem("finance_v1_data", JSON.stringify(data));
+            }, [data]);
+
+            const totalIncome = 16000; // ตัวอย่าง
+            const totalExpense = 5000; // ตัวอย่าง
+
+            return (
+                <div style={{ padding: "20px", maxWidth: "600px", margin: "0 auto" }}>
+                    <header style={{ marginBottom: "30px", textAlign: "center" }}>
+                        <h1 style={{ fontFamily: "'Playfair Display'", fontSize: "28px" }}>Finance Tracker</h1>
+                        <p style={{ color: "#64748b" }}>ยินดีต้อนรับ! แอปเริ่มทำงานแล้ว</p>
+                    </header>
+
+                    <div style={{ background: "#0f172a", padding: "20px", borderRadius: "16px", border: "1px solid #1e293b", marginBottom: "20px" }}>
+                        <div style={{ fontSize: "14px", color: "#94a3b8" }}>ยอดคงเหลือ (Balance)</div>
+                        <div style={{ fontSize: "32px", fontWeight: "bold", color: "#10b981" }}>฿{(totalIncome - totalExpense).toLocaleString()}</div>
+                    </div>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
+                        <div style={{ background: "#0f172a", padding: "15px", borderRadius: "12px", border: "1px solid #1e293b" }}>
+                            <div style={{ fontSize: "12px", color: "#94a3b8" }}>รายรับ</div>
+                            <div style={{ fontSize: "18px", color: "#10b981" }}>฿{totalIncome.toLocaleString()}</div>
+                        </div>
+                        <div style={{ background: "#0f172a", padding: "15px", borderRadius: "12px", border: "1px solid #1e293b" }}>
+                            <div style={{ fontSize: "12px", color: "#94a3b8" }}>รายจ่าย</div>
+                            <div style={{ fontSize: "18px", color: "#f87171" }}>฿{totalExpense.toLocaleString()}</div>
+                        </div>
+                    </div>
+
+                    <p style={{ textAlign: "center", marginTop: "40px", fontSize: "12px", color: "#334155" }}>
+                        หากคุณเห็นข้อความนี้ แสดงว่าระบบรันบน iPhone ได้ปกติแล้วครับ
+                    </p>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<FinanceApp />);
+    </script>
+</body>
+</html>
