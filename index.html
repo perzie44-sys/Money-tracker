@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Finance Tracker Mini</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Noto+Sans+Thai:wght@400;600&display=swap');
+        
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { 
+            margin: 0; 
+            background: #020817; 
+            color: #f8fafc; 
+            font-family: 'DM Sans', 'Noto Sans Thai', sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container { width: 100%; max-width: 400px; }
+        .card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        h1 { font-size: 24px; margin: 0 0 5px 0; color: #fff; }
+        .label { color: #94a3b8; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; }
+        .balance { font-size: 36px; font-weight: 700; color: #10b981; margin: 10px 0; }
+        
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; color: #cbd5e1; }
+        input {
+            width: 100%;
+            background: #020817;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 12px;
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+        input:focus { border-color: #6366f1; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        .stat-card { background: #1e293b; padding: 15px; border-radius: 15px; text-align: center; }
+        .income-text { color: #10b981; font-weight: bold; }
+        .expense-text { color: #f87171; font-weight: bold; }
+        
+        button {
+            width: 100%;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:active { transform: scale(0.98); opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header style="margin-bottom: 30px; text-align: center;">
+        <h1>Finance Tracker</h1>
+        <div class="label">บันทึกรายรับ-รายจ่าย</div>
+    </header>
+
+    <div class="card">
+        <div class="label">ยอดคงเหลือสุทธิ</div>
+        <div id="totalBalance" class="balance">฿0</div>
+        
+        <div class="grid">
+            <div class="stat-card">
+                <div class="label" style="font-size: 10px;">รายรับ</div>
+                <div id="displayIncome" class="income-text">฿0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label" style="font-size: 10px;">รายจ่าย</div>
+                <div id="displayExpense" class="expense-text">฿0</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="input-group">
+            <label>รายรับ (Income)</label>
+            <input type="number" id="inputIncome" placeholder="0" inputmode="decimal">
+        </div>
+        <div class="input-group">
+            <label>รายจ่าย (Expense)</label>
+            <input type="number" id="inputExpense" placeholder="0" inputmode="decimal">
+        </div>
+        <button onclick="saveData()">บันทึกข้อมูล (Save)</button>
+    </div>
+    
+    <div style="text-align: center; color: #475569; font-size: 12px;">
+        ข้อมูลจะถูกจดจำไว้ใน iPhone เครื่องนี้
+    </div>
+</div>
+
+<script>
+    // โหลดข้อมูลเมื่อเปิดหน้าเว็บ
+    window.onload = function() {
+        const savedIncome = localStorage.getItem('my_income') || 0;
+        const savedExpense = localStorage.getItem('my_expense') || 0;
+        
+        document.getElementById('inputIncome').value = savedIncome;
+        document.getElementById('inputExpense').value = savedExpense;
+        
+        updateDisplay(savedIncome, savedExpense);
+    };
+
+    function saveData() {
+        const income = document.getElementById('inputIncome').value || 0;
+        const expense = document.getElementById('inputExpense').value || 0;
+        
+        // บันทึกลงเครื่อง
+        localStorage.setItem('my_income', income);
+        localStorage.setItem('my_expense', expense);
+        
+        updateDisplay(income, expense);
+        alert('บันทึกสำเร็จ!');
+    }
+
+    function updateDisplay(inc, exp) {
+        const total = parseFloat(inc) - parseFloat(exp);
+        document.getElementById('totalBalance').innerText = '฿' + total.toLocaleString();
+        document.getElementById('displayIncome').innerText = '฿' + parseFloat(inc).toLocaleString();
+        document.getElementById('displayExpense').innerText = '฿' + parseFloat(exp).toLocaleString();
+    }
+</script>
+
+</body>
+</html>
